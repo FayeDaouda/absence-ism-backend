@@ -1,5 +1,5 @@
 # Étape 1 : builder l'application
-FROM maven:3.8.6-openjdk-17-slim AS build
+FROM maven:3.8.7-eclipse-temurin-17 AS build
 
 WORKDIR /app
 
@@ -9,14 +9,12 @@ COPY src ./src
 RUN mvn clean package -DskipTests
 
 # Étape 2 : lancer l'application
-FROM openjdk:17-jdk-slim
+FROM eclipse-temurin:17-jdk-jammy
 
 WORKDIR /app
 
 COPY --from=build /app/target/*.jar app.jar
 
-# Pas besoin d'exposer un port fixe ici,
-# Render gère ça automatiquement.
-# EXPOSE 8081
+EXPOSE 8081
 
-ENTRYPOINT ["java", "-jar", "app.jar"]
+ENTRYPOINT ["java","-jar","app.jar"]
