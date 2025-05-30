@@ -27,26 +27,31 @@ public class PointageController {
     }
 
     @PostMapping
-    public ResponseEntity<?> pointerEtudiant(@RequestBody Map<String, String> payload) {
-        String matricule = payload.get("matricule");
-        String emailVigile = payload.get("emailVigile");
+public ResponseEntity<?> pointerEtudiant(@RequestBody Map<String, String> payload) {
+    String matricule = payload.get("matricule");
+    String emailVigile = payload.get("emailVigile");
 
-        Optional<Etudiant> etudiantOpt = etudiantRepository.findByMatricule(matricule);
-        if (etudiantOpt.isEmpty()) {
-            return ResponseEntity.badRequest().body("Matricule non trouvé");
-        }
-
-        Etudiant etudiant = etudiantOpt.get();
-
-        Absence absence = new Absence();
-        absence.setEtudiantId(etudiant.getId());
-        absence.setDate(LocalDate.now());
-        absence.setHeure(LocalTime.now());
-        absence.setJustifiee(false);
-        absence.setRetard(LocalTime.now().isAfter(LocalTime.of(8, 30)));
-        absence.setCreePar(emailVigile);
-
-        absenceRepository.save(absence);
-        return ResponseEntity.ok("Absence enregistrée");
+    if (matricule == null || matricule.isEmpty() || emailVigile == null || emailVigile.isEmpty()) {
+        return ResponseEntity.badRequest().body("matricule et emailVigile sont requis");
     }
+
+    Optional<Etudiant> etudiantOpt = etudiantRepository.findByMatricule(matricule);
+    if (etudiantOpt.isEmpty()) {
+        return ResponseEntity.badRequest().body("Matricule non trouvé");
+    }
+
+    Etudiant etudiant = etudiantOpt.get();
+
+    Absence absence = new Absence();
+    absence.setEtudiantId(etudiant.getId());
+    absence.setDate(LocalDate.now());
+    absence.setHeure(LocalTime.now());
+    absence.setJustifiee(false);
+    absence.setRetard(LocalTime.now().isAfter(LocalTime.of(8, 30)));
+    absence.setCreePar(emailVigile);
+
+    Absence savedAbsence = absenceRepository.save(absence);
+    return ResponseEntity.ok(savedAbsence);
+}
+
 }
