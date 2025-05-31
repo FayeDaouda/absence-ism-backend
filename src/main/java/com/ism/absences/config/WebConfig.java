@@ -9,8 +9,10 @@ public class WebConfig implements WebMvcConfigurer {
   @Override
   public void addCorsMappings(CorsRegistry registry) {
     registry.addMapping("/**")
-    .allowedOrigins("https://absence-ism-frontend.vercel.app")    // Remplace "*" par "https://absence-ism-frontend.vercel.app" si tu connais le domaine exact
+        .allowedOriginPatterns("*")
         .allowedMethods("GET", "POST", "PUT", "DELETE")
-        .allowedHeaders("*");
+        .allowedHeaders("*")
+        .allowCredentials(true);
   }
 }
+
