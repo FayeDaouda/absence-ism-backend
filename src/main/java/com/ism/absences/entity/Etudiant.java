@@ -17,4 +17,10 @@ public class Etudiant {
     private String motDePasse;
     private String classe;
     private String matricule;
+
+    private String photoUrl;
+    private String annee;
+    private String etatScolarite;
+
+    private String userId; // Lien avec le document User
 }
