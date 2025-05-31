@@ -40,7 +40,7 @@ public ResponseEntity<?> login(@RequestBody Map<String, String> loginRequest) {
     LoginResponse response = new LoginResponse(
         user.getId(),
         user.getEmail(),
-        user.getRole().name(),
+        user.getRole(), 
         user.getMatricule() // Assure-toi que ce champ existe dans ton entité User
     );
 
