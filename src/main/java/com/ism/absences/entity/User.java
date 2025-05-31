@@ -17,6 +17,5 @@ public class User {
 
     private String role;
 
-    // Lombok @Data gère déjà getter/setter
+    private String matricule; // ✅ Champ ajouté pour les étudiants
 }
-
