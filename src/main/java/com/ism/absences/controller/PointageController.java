@@ -14,7 +14,7 @@ import java.util.Map;
 import java.util.Optional;
 
 @RestController
-@RequestMapping("/api/pointage")
+@RequestMapping("/api/pointages")
 @RequiredArgsConstructor
 public class PointageController {
 
