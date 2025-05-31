@@ -19,16 +19,5 @@ public class VigileController {
         this.pointageService = pointageService;
     }
 
-    @PostMapping("/pointages")
-    public ResponseEntity<Pointage> enregistrerPointage(@RequestBody PointageDTO pointageDTO) {
-        // Conversion DTO -> Entity
-        Pointage pointage = new Pointage();
-        pointage.setMatriculeEtudiant(pointageDTO.getMatriculeEtudiant());
-        pointage.setEmailVigile(pointageDTO.getEmailVigile());
-        pointage.setEtat(pointageDTO.getEtat());
-        pointage.setDateHeure(LocalDateTime.now());
-
-        Pointage savedPointage = pointageService.enregistrerPointage(pointage);
-        return ResponseEntity.ok(savedPointage);
-    }
+    
 }

@@ -1,57 +1,68 @@
 package com.ism.absences.controller;
 
 import com.ism.absences.entity.Absence;
-import com.ism.absences.entity.Etudiant;
+import com.ism.absences.entity.Present;
 import com.ism.absences.repository.AbsenceRepository;
-import com.ism.absences.repository.EtudiantRepository;
-import lombok.RequiredArgsConstructor;
+import com.ism.absences.repository.PresentRepository;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
-import java.util.Map;
-import java.util.Optional;
 
 @RestController
-@RequestMapping("/api/pointages")
-@RequiredArgsConstructor
+@RequestMapping("/api")
 public class PointageController {
 
-    private final EtudiantRepository etudiantRepository;
-    private final AbsenceRepository absenceRepository;
+    @Autowired
+    private AbsenceRepository absenceRepository;
 
-    @GetMapping("/ping")
-    public ResponseEntity<String> ping() {
-        return ResponseEntity.ok("Pointage API is alive");
+    @Autowired
+    private PresentRepository presentRepository;
+
+    @PostMapping("/absences")
+    public ResponseEntity<?> ajouterAbsence(@RequestBody PointageRequest req) {
+        Absence absence = new Absence();
+        absence.setEtudiantId(req.getMatricule());
+        absence.setCreePar(req.getEmailVigile());
+        absence.setDate(LocalDate.now());
+        absence.setHeure(LocalTime.now());
+        absence.setJustifiee(false);
+        absence.setRetard(false);
+        Absence saved = absenceRepository.save(absence);
+        return ResponseEntity.ok(saved);
     }
 
-    @PostMapping
-public ResponseEntity<?> pointerEtudiant(@RequestBody Map<String, String> payload) {
-    String matricule = payload.get("matricule");
-    String emailVigile = payload.get("emailVigile");
-
-    if (matricule == null || matricule.isEmpty() || emailVigile == null || emailVigile.isEmpty()) {
-        return ResponseEntity.badRequest().body("matricule et emailVigile sont requis");
+    @PostMapping("/presents")
+    public ResponseEntity<?> ajouterPresent(@RequestBody PointageRequest req) {
+        Present present = new Present();
+        present.setEtudiantId(req.getMatricule());
+        present.setCreePar(req.getEmailVigile());
+        present.setDate(LocalDate.now());
+        present.setHeure(LocalTime.now());
+        Present saved = presentRepository.save(present);
+        return ResponseEntity.ok(saved);
     }
 
-    Optional<Etudiant> etudiantOpt = etudiantRepository.findByMatricule(matricule);
-    if (etudiantOpt.isEmpty()) {
-        return ResponseEntity.badRequest().body("Matricule non trouvé");
+    public static class PointageRequest {
+        private String matricule;
+        private String emailVigile;
+
+        public String getMatricule() {
+            return matricule;
+        }
+
+        public void setMatricule(String matricule) {
+            this.matricule = matricule;
+        }
+
+        public String getEmailVigile() {
+            return emailVigile;
+        }
+
+        public void setEmailVigile(String emailVigile) {
+            this.emailVigile = emailVigile;
+        }
     }
-
-    Etudiant etudiant = etudiantOpt.get();
-
-    Absence absence = new Absence();
-    absence.setEtudiantId(etudiant.getId());
-    absence.setDate(LocalDate.now());
-    absence.setHeure(LocalTime.now());
-    absence.setJustifiee(false);
-    absence.setRetard(LocalTime.now().isAfter(LocalTime.of(8, 30)));
-    absence.setCreePar(emailVigile);
-
-    Absence savedAbsence = absenceRepository.save(absence);
-    return ResponseEntity.ok(savedAbsence);
-}
-
 }
