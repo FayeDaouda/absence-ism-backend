@@ -11,4 +11,7 @@ public interface PointageRepository extends MongoRepository<Pointage, String> {
     // Récupérer tous les pointages d'un vigile entre deux dates
     List<Pointage> findByCreeParAndDateBetween(String creePar, Date start, Date end);
 
+    List<Pointage> findByDateBetween(Date start, Date end);
+
+
 }

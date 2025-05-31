@@ -2,6 +2,11 @@ package com.ism.absences.controller;
 
 import com.ism.absences.entity.Pointage;
 import com.ism.absences.service.PointageService;
+
+import java.time.LocalDate;
+import java.time.ZoneId;
+import java.util.List;
+
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -17,7 +22,6 @@ public class PointageController {
 
     @PostMapping
     public ResponseEntity<Pointage> ajouterPointage(@RequestBody PointageRequest req) {
-        // etat attend "present", "absent" ou "retard"
         Pointage pointage = pointageService.enregistrerPointage(
                 req.getMatricule(),
                 req.getEmailVigile(),
@@ -27,13 +31,25 @@ public class PointageController {
         return ResponseEntity.ok(pointage);
     }
 
+    @GetMapping
+    public ResponseEntity<List<Pointage>> getAllPointages() {
+        List<Pointage> pointages = pointageService.getAllPointages();
+        return ResponseEntity.ok(pointages);
+    }
+
+    @GetMapping("/aujourdhui")
+    public ResponseEntity<List<Pointage>> getPointagesDuJour() {
+        List<Pointage> pointages = pointageService.getPointagesDuJour();
+        return ResponseEntity.ok(pointages);
+    }
+
     public static class PointageRequest {
         private String matricule;
         private String emailVigile;
-        private String etat;       // "present", "absent", "retard"
-        private Boolean justifiee; // null si non applicable
+        private String etat;
+        private Boolean justifiee;
 
-        // getters & setters
+        // getters & setters...
         public String getMatricule() { return matricule; }
         public void setMatricule(String matricule) { this.matricule = matricule; }
         public String getEmailVigile() { return emailVigile; }
