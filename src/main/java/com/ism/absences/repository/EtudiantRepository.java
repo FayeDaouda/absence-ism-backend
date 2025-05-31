@@ -5,7 +5,8 @@ import org.springframework.data.mongodb.repository.MongoRepository;
 
 import java.util.List;
 
-public interface EtudiantRepository extends MongoRepository<Etudiant, String> {
-    List<Etudiant> findAllByMatricule(String matricule);
+import java.util.Optional;
 
+public interface EtudiantRepository extends MongoRepository<Etudiant, String> {
+    Optional<Etudiant> findByMatricule(String matricule);
 }

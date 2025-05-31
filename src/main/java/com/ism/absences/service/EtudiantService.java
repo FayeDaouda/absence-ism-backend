@@ -50,8 +50,8 @@ public class EtudiantService {
     }
     // Nouvelle méthode pour rechercher par matricule
     // Nouvelle méthode pour rechercher par matricule
-    public List<Etudiant> rechercherParMatricule(String matricule) {
-        return repository.findAllByMatricule(matricule);
+    public Optional<Etudiant> rechercherParMatricule(String matricule) {
+        return repository.findByMatricule(matricule);
     }
     
 }

@@ -28,12 +28,13 @@ public class EtudiantController {
 
     // Lister tous les étudiants ou rechercher par matricule
     @GetMapping
-    public List<Etudiant> listerEtudiants(@RequestParam(required = false) String matricule) {
-        if (matricule != null) {
-            return service.rechercherParMatricule(matricule);
-        }
-        return service.listerEtudiants();
+public List<Etudiant> listerEtudiants(@RequestParam(required = false) String matricule) {
+    if (matricule != null) {
+        Optional<Etudiant> etudiant = service.rechercherParMatricule(matricule);
+        return etudiant.map(List::of).orElse(List.of());
     }
+    return service.listerEtudiants();
+}
 
     // Récupérer un étudiant par son ID (ici String, adapte si besoin)
     @GetMapping("/{id}")
