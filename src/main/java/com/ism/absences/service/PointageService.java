@@ -1,21 +1,18 @@
 package com.ism.absences.service;
 
-import com.ism.absences.dto.PointageDTO;
 import com.ism.absences.entity.Pointage;
 import com.ism.absences.repository.PointageRepository;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 @Service
 public class PointageService {
 
-    private final PointageRepository pointageRepository;
+    @Autowired
+    private PointageRepository pointageRepository;
 
-    public PointageService(PointageRepository pointageRepository) {
-        this.pointageRepository = pointageRepository;
-    }
-
-    public Pointage enregistrerPointage(PointageDTO dto) {
-        Pointage pointage = new Pointage(dto.getMatricule(), dto.getEmailVigile());
+    public Pointage enregistrerPointage(Pointage pointage) {
         return pointageRepository.save(pointage);
     }
 }
+
