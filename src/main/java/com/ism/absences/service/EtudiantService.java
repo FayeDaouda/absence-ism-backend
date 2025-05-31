@@ -12,6 +12,8 @@ import java.util.Optional;
 public class EtudiantService {
     private final EtudiantRepository repository;
 
+    
+
     public EtudiantService(EtudiantRepository repository) {
         this.repository = repository;
     }
@@ -45,5 +47,10 @@ public class EtudiantService {
                     repository.delete(e);
                     return true;
                 }).orElse(false);
+    }
+    // Nouvelle méthode pour rechercher par matricule
+    // Nouvelle méthode pour rechercher par matricule
+    public Optional<Etudiant> rechercherParMatricule(String matricule) {
+        return repository.findByMatricule(matricule);
     }
 }

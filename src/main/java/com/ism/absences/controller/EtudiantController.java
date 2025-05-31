@@ -25,11 +25,13 @@ public class EtudiantController {
     }
 
     @GetMapping
-    public List<Etudiant> listerEtudiants() {
+    public List<Etudiant> listerEtudiants(@RequestParam(required = false) String matricule) {
+        if (matricule != null) {
+            return service.rechercherParMatricule(matricule);
+        }
         return service.listerEtudiants();
     }
 
-    // GET par ID
     @GetMapping("/{id}")
     public ResponseEntity<Etudiant> getEtudiantById(@PathVariable String id) {
         return service.getEtudiantById(id)
@@ -37,7 +39,6 @@ public class EtudiantController {
                 .orElse(ResponseEntity.notFound().build());
     }
 
-    // PUT pour mise à jour
     @PutMapping("/{id}")
     public ResponseEntity<Etudiant> mettreAJourEtudiant(@PathVariable String id, @RequestBody Etudiant etudiant) {
         return service.mettreAJourEtudiant(id, etudiant)
@@ -45,7 +46,6 @@ public class EtudiantController {
                 .orElse(ResponseEntity.notFound().build());
     }
 
-    // DELETE par ID
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> supprimerEtudiant(@PathVariable String id) {
         boolean deleted = service.supprimerEtudiant(id);
