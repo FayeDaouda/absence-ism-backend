@@ -6,7 +6,12 @@ import org.springframework.data.mongodb.core.mapping.Document;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
+import lombok.Getter;
+import lombok.Setter;
 
+
+@Getter
+@Setter
 @Document(collection = "presents")
 @Data
 @NoArgsConstructor
