@@ -14,20 +14,27 @@ public class SecurityConfig {
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
             .csrf().disable()
-            .cors()  // <-- active la gestion CORS via WebMvcConfigurer
-            .and()
-            .authorizeHttpRequests(auth -> auth.anyRequest().permitAll());
+            .cors().and()
+            .authorizeHttpRequests(auth -> auth
+                .requestMatchers(
+                    "/swagger-ui/**",
+                    "/v3/api-docs/**",
+                    "/swagger-resources/**",
+                    "/webjars/**"
+                ).permitAll()
+                .anyRequest().permitAll()
+            );
         return http.build();
     }
 
-    // Configurer les règles CORS ici
+    // Configuration CORS
     @Bean
     public WebMvcConfigurer corsConfigurer() {
         return new WebMvcConfigurer() {
             @Override
             public void addCorsMappings(CorsRegistry registry) {
                 registry.addMapping("/**")
-                    .allowedOrigins("*")  // ou ton frontend URL
+                    .allowedOrigins("*")  // Remplace * par ton frontend si nécessaire
                     .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS")
                     .allowedHeaders("*");
             }
