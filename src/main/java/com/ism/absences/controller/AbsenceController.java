@@ -5,6 +5,7 @@ import com.ism.absences.repository.AbsenceRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import java.util.Map;
 
 import java.util.List;
 
@@ -31,12 +32,15 @@ public class AbsenceController {
     }
 
     // Justifier une absence par ID
-    @PutMapping("/justifier/{id}")
-    public ResponseEntity<Absence> justifyAbsence(@PathVariable String id, @RequestBody(required = false) String motif) {
+    @PutMapping("/absences/{id}/justify")
+    public ResponseEntity<Absence> justifyAbsence(
+            @PathVariable String id,
+            @RequestBody Map<String, String> body
+    ) {
         return absenceRepository.findById(id)
                 .map(absence -> {
                     absence.setJustifie(true);
-                    absence.setMotif(motif);
+                    absence.setMotif(body.get("motif")); // extrait le motif du JSON
                     Absence updated = absenceRepository.save(absence);
                     return ResponseEntity.ok(updated);
                 })
