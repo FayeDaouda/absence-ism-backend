@@ -13,5 +13,9 @@ public interface PointageRepository extends MongoRepository<Pointage, String> {
 
     List<Pointage> findByDateBetween(Date start, Date end);
 
+    List<Pointage> findByEtudiantId(String etudiantId);
+
+    
+
 
 }

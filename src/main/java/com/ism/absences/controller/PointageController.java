@@ -43,6 +43,13 @@ public class PointageController {
         return ResponseEntity.ok(pointages);
     }
 
+    @GetMapping("/etudiant/{etudiantId}")
+public ResponseEntity<List<Pointage>> getPointagesByEtudiantId(@PathVariable String etudiantId) {
+    List<Pointage> pointages = pointageService.getPointagesByEtudiantId(etudiantId);
+    return ResponseEntity.ok(pointages);
+}
+
+
     public static class PointageRequest {
         private String matricule;
         private String emailVigile;

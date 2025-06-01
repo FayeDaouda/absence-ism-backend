@@ -46,4 +46,9 @@ public class PointageService {
     public List<Pointage> getAllPointages() {
         return pointageRepository.findAll();
     }
+
+    public List<Pointage> getPointagesByEtudiantId(String etudiantId) {
+        return pointageRepository.findByEtudiantId(etudiantId);
+    }
+    
 }
