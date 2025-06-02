@@ -69,4 +69,26 @@ public class UtilisateurController {
         utilisateurService.deleteById(id);
         return ResponseEntity.noContent().build();
     }
+    @GetMapping("/etudiants")
+public List<Utilisateur> getAllEtudiants() {
+    return utilisateurService.findByRole("ETUDIANT");
+}
+@GetMapping("/role/{role}")
+public ResponseEntity<List<Utilisateur>> getUtilisateursByRole(@PathVariable String role) {
+    List<Utilisateur> utilisateurs = utilisateurService.findByRole(role);
+    if (utilisateurs.isEmpty()) {
+        return ResponseEntity.noContent().build(); // 204 si aucun résultat
+    }
+    return ResponseEntity.ok(utilisateurs); // 200 avec liste
+}
+@GetMapping("/classe/{id}")
+public ResponseEntity<List<Utilisateur>> getUtilisateursByClasse(@PathVariable("id") String classeId) {
+    List<Utilisateur> utilisateurs = utilisateurService.findByClasseId(classeId);
+    if (utilisateurs.isEmpty()) {
+        return ResponseEntity.noContent().build(); // 204 No Content
+    }
+    return ResponseEntity.ok(utilisateurs); // 200 OK
+}
+
+
 }

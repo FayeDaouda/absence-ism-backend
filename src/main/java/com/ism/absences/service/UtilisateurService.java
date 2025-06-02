@@ -35,4 +35,11 @@ public class UtilisateurService {
     public void deleteById(String id) {
         utilisateurRepository.deleteById(id);
     }
+    public List<Utilisateur> findByRole(String role) {
+        return utilisateurRepository.findByRole(role);
+    }
+    public List<Utilisateur> findByClasseId(String classeId) {
+        return utilisateurRepository.findByClasseId(classeId);
+    }
+    
 }
