@@ -16,7 +16,23 @@ public class AbsenceService {
         this.absenceRepository = absenceRepository;
     }
 
-    public List<Absence> getAbsencesByMatricule(String matricule) {
-        return absenceRepository.findByMatricule(matricule);
+    public List<Absence> findAll() {
+        return absenceRepository.findAll();
+    }
+
+    public Optional<Absence> findById(String id) {
+        return absenceRepository.findById(id);
+    }
+
+    public List<Absence> findByEtudiantId(String etudiantId) {
+        return absenceRepository.findByEtudiantId(etudiantId);
+    }
+
+    public Absence save(Absence absence) {
+        return absenceRepository.save(absence);
+    }
+
+    public void deleteById(String id) {
+        absenceRepository.deleteById(id);
     }
 }

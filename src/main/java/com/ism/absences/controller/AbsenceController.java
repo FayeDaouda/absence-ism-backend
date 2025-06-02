@@ -1,49 +1,69 @@
 package com.ism.absences.controller;
 
 import com.ism.absences.entity.Absence;
-import com.ism.absences.repository.AbsenceRepository;
-import lombok.RequiredArgsConstructor;
+import com.ism.absences.service.AbsenceService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import java.util.Map;
 
 import java.util.List;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/absences")
-@RequiredArgsConstructor
 @CrossOrigin(origins = "*")
 public class AbsenceController {
 
-    private final AbsenceRepository absenceRepository;
+    private final AbsenceService absenceService;
 
-    // Récupérer toutes les absences d’un étudiant par matricule
-    @GetMapping("/etudiant/{matricule}")
-    public ResponseEntity<List<Absence>> getAbsencesByMatricule(@PathVariable String matricule) {
-        List<Absence> absences = absenceRepository.findByMatricule(matricule);
-        return ResponseEntity.ok(absences);
+    public AbsenceController(AbsenceService absenceService) {
+        this.absenceService = absenceService;
     }
 
-    // Ajouter une nouvelle absence
-    @PostMapping
-    public ResponseEntity<Absence> addAbsence(@RequestBody Absence absence) {
-        Absence savedAbsence = absenceRepository.save(absence);
-        return ResponseEntity.ok(savedAbsence);
+    @GetMapping
+    public List<Absence> getAllAbsences() {
+        return absenceService.findAll();
     }
 
-    // Justifier une absence par ID
-    @PutMapping("/absences/{id}/justify")
-    public ResponseEntity<Absence> justifyAbsence(
-            @PathVariable String id,
-            @RequestBody Map<String, String> body
-    ) {
-        return absenceRepository.findById(id)
-                .map(absence -> {
-                    absence.setJustifie(true);
-                    absence.setMotif(body.get("motif")); // extrait le motif du JSON
-                    Absence updated = absenceRepository.save(absence);
-                    return ResponseEntity.ok(updated);
-                })
+    @GetMapping("/{id}")
+    public ResponseEntity<Absence> getAbsenceById(@PathVariable String id) {
+        Optional<Absence> absence = absenceService.findById(id);
+        return absence.map(ResponseEntity::ok)
                 .orElseGet(() -> ResponseEntity.notFound().build());
+    }
+
+    @GetMapping("/etudiant/{etudiantId}")
+    public List<Absence> getAbsencesByEtudiantId(@PathVariable String etudiantId) {
+        return absenceService.findByEtudiantId(etudiantId);
+    }
+
+    @PostMapping
+    public Absence createAbsence(@RequestBody Absence absence) {
+        return absenceService.save(absence);
+    }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<Absence> updateAbsence(@PathVariable String id, @RequestBody Absence absenceDetails) {
+        Optional<Absence> absenceOpt = absenceService.findById(id);
+        if (absenceOpt.isEmpty()) {
+            return ResponseEntity.notFound().build();
+        }
+        Absence absence = absenceOpt.get();
+        absence.setDate(absenceDetails.getDate());
+        absence.setHeureDebut(absenceDetails.getHeureDebut());
+        absence.setHeureFin(absenceDetails.getHeureFin());
+        absence.setStatut(absenceDetails.getStatut());
+        absence.setEtudiantId(absenceDetails.getEtudiantId());
+        absence.setVigileId(absenceDetails.getVigileId());
+        absence.setCoursId(absenceDetails.getCoursId());
+        absence.setJustificationId(absenceDetails.getJustificationId());
+
+        Absence updated = absenceService.save(absence);
+        return ResponseEntity.ok(updated);
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> deleteAbsence(@PathVariable String id) {
+        absenceService.deleteById(id);
+        return ResponseEntity.noContent().build();
     }
 }
