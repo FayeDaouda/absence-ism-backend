@@ -23,16 +23,16 @@ public class AuthService {
 
     public LoginResponse login(LoginRequest loginRequest) {
         Optional<Utilisateur> userOpt = utilisateurRepository.findByEmail(loginRequest.getEmail());
-
+    
         if (userOpt.isEmpty() || 
             !userOpt.get().getMotDePasse().equals(loginRequest.getMotDePasse())) {
             throw new RuntimeException("Identifiants invalides");
         }
-
+    
         Utilisateur utilisateur = userOpt.get();
         String token = jwtUtil.generateToken(utilisateur.getEmail(), utilisateur.getRole().name());
-
-
-        return new LoginResponse(token, utilisateur.getRole(), utilisateur.getEmail());
+    
+        return new LoginResponse(utilisateur.getEmail(), utilisateur.getRole(), token);
     }
+    
 }
