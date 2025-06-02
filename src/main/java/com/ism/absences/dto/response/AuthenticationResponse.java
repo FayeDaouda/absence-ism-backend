@@ -1,5 +1,4 @@
-// package com.ism.absences.dto;
-
+package com.ism.absences.dto.response;
 public class AuthenticationResponse {
     private String token;
 

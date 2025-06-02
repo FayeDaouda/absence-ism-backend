@@ -1,5 +1,4 @@
-// package com.ism.absences.dto;
-
+package com.ism.absences.dto.request;
 public class AuthenticationRequest {
     private String email;
     private String motDePasse;
