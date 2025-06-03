@@ -22,17 +22,27 @@ public class AuthService {
     }
 
     public LoginResponse login(LoginRequest loginRequest) {
+        System.out.println("Tentative de connexion : " + loginRequest.getEmail());
+    
         Optional<Utilisateur> userOpt = utilisateurRepository.findByEmail(loginRequest.getEmail());
     
-        if (userOpt.isEmpty() || 
-            !userOpt.get().getMotDePasse().equals(loginRequest.getMotDePasse())) {
+        if (userOpt.isEmpty()) {
+            System.out.println("Email non trouvé");
             throw new RuntimeException("Identifiants invalides");
         }
     
         Utilisateur utilisateur = userOpt.get();
+    
+        if (!utilisateur.getMotDePasse().equals(loginRequest.getMotDePasse())) {
+            System.out.println("Mot de passe incorrect");
+            throw new RuntimeException("Identifiants invalides");
+        }
+    
         String token = jwtUtil.generateToken(utilisateur.getEmail(), utilisateur.getRole().name());
     
+        System.out.println("Connexion réussie. Token généré.");
         return new LoginResponse(utilisateur.getEmail(), utilisateur.getRole(), token);
     }
+    
     
 }
