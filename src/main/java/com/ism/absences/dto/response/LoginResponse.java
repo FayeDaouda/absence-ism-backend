@@ -5,19 +5,22 @@ import com.ism.absences.enums.Role;
 public class LoginResponse {
     private String email;
     private Role role;
+    private String motDePasse; // Ajouté ici
     private String token; // Peut être null si token désactivé
 
-    // Constructeur avec token (pour usage futur)
-    public LoginResponse(String email, Role role, String token) {
+    // Constructeur complet
+    public LoginResponse(String email, Role role, String motDePasse, String token) {
         this.email = email;
         this.role = role;
+        this.motDePasse = motDePasse;
         this.token = token;
     }
 
-    // Constructeur sans token (pour tests sans JWT)
-    public LoginResponse(String email, Role role) {
+    // Constructeur sans token (pour tests)
+    public LoginResponse(String email, Role role, String motDePasse) {
         this.email = email;
         this.role = role;
+        this.motDePasse = motDePasse;
         this.token = null;
     }
 
@@ -36,6 +39,14 @@ public class LoginResponse {
 
     public void setRole(Role role) {
         this.role = role;
+    }
+
+    public String getMotDePasse() {
+        return motDePasse;
+    }
+
+    public void setMotDePasse(String motDePasse) {
+        this.motDePasse = motDePasse;
     }
 
     public String getToken() {
