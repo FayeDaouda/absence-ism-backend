@@ -1,24 +1,28 @@
 package com.ism.absences.security;
 
-import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.SignatureAlgorithm;
+import java.util.Date;
+
 import org.springframework.stereotype.Component;
 
-import java.util.Date;
+import com.ism.absences.entity.Utilisateur;
+
+import io.jsonwebtoken.Jwts;
+import io.jsonwebtoken.SignatureAlgorithm;
 
 @Component
 public class JwtUtil {
 
-    private final String jwtSecret = "ismSecretKey"; // 🔐 À stocker en sécurité
-    private final long jwtExpiration = 86400000; // 1 jour
+    private final String SECRET_KEY = "maCleSecreteTrèsLongueEtComplexe";
 
-    public String generateToken(String email, String role) {
+    public String generateToken(Utilisateur utilisateur) {
         return Jwts.builder()
-                .setSubject(email)
-                .claim("role", role)
-                .setIssuedAt(new Date())
-                .setExpiration(new Date(System.currentTimeMillis() + jwtExpiration))
-                .signWith(SignatureAlgorithm.HS512, jwtSecret)
-                .compact();
+            .setSubject(utilisateur.getEmail())
+            .claim("role", utilisateur.getRole().name())
+            .setIssuedAt(new Date())
+            .setExpiration(new Date(System.currentTimeMillis() + 1000 * 60 * 60 * 10))
+            .signWith(SignatureAlgorithm.HS256, SECRET_KEY)
+            .compact();
     }
+
+    // Méthodes pour valider et lire token (à ajouter plus tard)
 }

@@ -1,6 +1,8 @@
 package com.ism.absences.controller;
 
 import com.ism.absences.dto.request.LoginRequest;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import com.ism.absences.dto.response.LoginResponse;
 import com.ism.absences.service.AuthService;
 import org.springframework.http.ResponseEntity;
@@ -10,7 +12,6 @@ import java.util.Map;
 
 @RestController
 @RequestMapping("/api/auth")
-@CrossOrigin(origins = "*")
 public class AuthController {
 
     private final AuthService authService;
@@ -20,13 +21,12 @@ public class AuthController {
     }
 
     @PostMapping("/login")
-public ResponseEntity<?> login(@RequestBody LoginRequest loginRequest) {
-    try {
-        LoginResponse response = authService.login(loginRequest);
-        return ResponseEntity.ok(response);
-    } catch (RuntimeException e) {
-        return ResponseEntity.status(401).body(Map.of("error", e.getMessage()));
+    public ResponseEntity<LoginResponse> login(@RequestBody LoginRequest loginRequest) {
+        try {
+            LoginResponse response = authService.login(loginRequest);
+            return ResponseEntity.ok(response);
+        } catch (RuntimeException ex) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(null);
+        }
     }
-}
-
 }

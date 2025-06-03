@@ -15,7 +15,7 @@ import com.ism.absences.security.JwtUtil;
 public class AuthService {
 
     private final UtilisateurRepository utilisateurRepository;
-    private final PasswordEncoder passwordEncoder;  // Ajouté
+    private final PasswordEncoder passwordEncoder;
     private final JwtUtil jwtUtil;
 
     public AuthService(UtilisateurRepository utilisateurRepository, PasswordEncoder passwordEncoder, JwtUtil jwtUtil) {
@@ -25,22 +25,15 @@ public class AuthService {
     }
 
     public LoginResponse login(LoginRequest loginRequest) {
-        Optional<Utilisateur> utilisateurOpt = utilisateurRepository.findByEmail(loginRequest.getEmail());
-        if (utilisateurOpt.isEmpty()) {
-            throw new RuntimeException("Utilisateur non trouvé");
-        }
-    
-        Utilisateur utilisateur = utilisateurOpt.get();
-    
+        Utilisateur utilisateur = utilisateurRepository.findByEmail(loginRequest.getEmail())
+            .orElseThrow(() -> new RuntimeException("Utilisateur non trouvé"));
+
         if (!passwordEncoder.matches(loginRequest.getMotDePasse(), utilisateur.getMotDePasse())) {
             throw new RuntimeException("Mot de passe incorrect");
         }
-    
-        // On crée la réponse sans token
-        LoginResponse response = new LoginResponse(utilisateur.getEmail(), utilisateur.getRole(), utilisateur.getMotDePasse());
 
-    
-        return response;
+        String token = jwtUtil.generateToken(utilisateur);
+
+        return new LoginResponse(utilisateur.getEmail(), utilisateur.getRole(), token);
     }
-    
 }
