@@ -21,12 +21,15 @@ public class AuthController {
     }
 
     @PostMapping("/login")
-    public ResponseEntity<LoginResponse> login(@RequestBody LoginRequest loginRequest) {
-        try {
-            LoginResponse response = authService.login(loginRequest);
-            return ResponseEntity.ok(response);
-        } catch (RuntimeException ex) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(null);
-        }
+public ResponseEntity<?> login(@RequestBody LoginRequest loginRequest) {
+    try {
+        LoginResponse response = authService.login(loginRequest);
+        return ResponseEntity.ok(response);
+    } catch (RuntimeException ex) {
+        // Renvoie un message d’erreur JSON dans le corps pour debug
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+                             .body(Map.of("error", ex.getMessage()));
     }
+}
+
 }
