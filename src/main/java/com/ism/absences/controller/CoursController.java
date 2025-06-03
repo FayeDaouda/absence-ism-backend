@@ -1,12 +1,21 @@
 package com.ism.absences.controller;
 
-import com.ism.absences.entity.Cours;
-import com.ism.absences.service.CoursService;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
-
 import java.util.List;
 import java.util.Optional;
+
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
+import com.ism.absences.entity.Cours;
+import com.ism.absences.service.CoursService;
 
 @RestController
 @RequestMapping("/api/cours")
@@ -65,4 +74,8 @@ public class CoursController {
         coursService.deleteById(id);
         return ResponseEntity.noContent().build();
     }
+    @GetMapping("/semaine/{classeId}")
+     public List<Cours> getCoursDeLaSemaine(@PathVariable String classeId) {
+    return coursService.findCoursDeLaSemaine(classeId);
+}
 }

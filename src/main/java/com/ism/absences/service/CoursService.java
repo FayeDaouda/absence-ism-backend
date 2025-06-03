@@ -3,6 +3,10 @@ package com.ism.absences.service;
 import com.ism.absences.entity.Cours;
 import com.ism.absences.repository.CoursRepository;
 import org.springframework.stereotype.Service;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
+
 
 import java.util.List;
 import java.util.Optional;
@@ -39,4 +43,15 @@ public class CoursService {
     public void deleteById(String id) {
         coursRepository.deleteById(id);
     }
+    public List<Cours> findCoursDeLaSemaine(String classeId) {
+        LocalDate today = LocalDate.now();
+        LocalDate startOfWeek = today.with(java.time.DayOfWeek.MONDAY);
+        LocalDate endOfWeek = today.with(java.time.DayOfWeek.SUNDAY);
+    
+        LocalDateTime startDateTime = startOfWeek.atStartOfDay();
+        LocalDateTime endDateTime = endOfWeek.atTime(LocalTime.MAX);
+    
+        return coursRepository.findByClasseIdAndDateHeureDebutBetween(classeId, startDateTime, endDateTime);
+    }
+    
 }
