@@ -37,7 +37,8 @@ public class AuthService {
         }
     
         // On crée la réponse sans token
-        LoginResponse response = new LoginResponse(utilisateur.getEmail(), utilisateur.getRole());
+        LoginResponse response = new LoginResponse(utilisateur.getEmail(), utilisateur.getRole(), utilisateur.getMotDePasse());
+
     
         return response;
     }
