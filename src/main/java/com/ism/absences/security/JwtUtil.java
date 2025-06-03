@@ -12,17 +12,19 @@ import io.jsonwebtoken.SignatureAlgorithm;
 @Component
 public class JwtUtil {
 
-    private final String SECRET_KEY = "maCleSecreteTrèsLongueEtComplexe";
+    // Clé secrète 100% ASCII, sans accents ni caractères spéciaux
+    private final String SECRET_KEY = "maCleSecreteTresLongueEtComplexe123456";
 
     public String generateToken(Utilisateur utilisateur) {
         return Jwts.builder()
             .setSubject(utilisateur.getEmail())
             .claim("role", utilisateur.getRole().name())
             .setIssuedAt(new Date())
-            .setExpiration(new Date(System.currentTimeMillis() + 1000 * 60 * 60 * 10))
-            .signWith(SignatureAlgorithm.HS256, SECRET_KEY)
+            .setExpiration(new Date(System.currentTimeMillis() + 1000 * 60 * 60 * 10)) // 10h de validité
+            .signWith(SignatureAlgorithm.HS256, SECRET_KEY.getBytes()) // clé en bytes ASCII
             .compact();
     }
 
-    // Méthodes pour valider et lire token (à ajouter plus tard)
+    // Ajoute ici les méthodes pour valider et parser le token JWT si besoin
+
 }
