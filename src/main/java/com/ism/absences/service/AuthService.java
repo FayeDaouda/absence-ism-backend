@@ -26,13 +26,14 @@ public class AuthService {
     public LoginResponse login(LoginRequest loginRequest) {
         Utilisateur utilisateur = utilisateurRepository.findByEmail(loginRequest.getEmail())
             .orElseThrow(() -> new RuntimeException("Utilisateur non trouvé"));
-
+    
         if (!passwordEncoder.matches(loginRequest.getMotDePasse(), utilisateur.getMotDePasse())) {
             throw new RuntimeException("Mot de passe incorrect");
         }
-
+    
         String token = jwtUtil.generateToken(utilisateur);
-
+    
         return new LoginResponse(utilisateur.getEmail(), utilisateur.getRole(), token);
     }
+    
 }
