@@ -33,7 +33,11 @@ public class AuthService {
     
         String token = jwtUtil.generateToken(utilisateur);
     
-        return new LoginResponse(utilisateur.getEmail(), utilisateur.getRole(), token);
+        // Nouveau constructeur avec id
+        return new LoginResponse(utilisateur.getId(), utilisateur.getEmail(), utilisateur.getRole(), token);
+
+
     }
+    
     
 }

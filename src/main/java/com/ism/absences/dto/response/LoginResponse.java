@@ -3,14 +3,24 @@ package com.ism.absences.dto.response;
 import com.ism.absences.enums.Role;
 
 public class LoginResponse {
+    private String id;
     private String email;
     private Role role;
     private String token;
 
-    public LoginResponse(String email, Role role, String token) {
+    public LoginResponse(String id, String email, Role role, String token) {
+        this.id = id;
         this.email = email;
         this.role = role;
         this.token = token;
+    }
+
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
     }
 
     public String getEmail() {
@@ -36,6 +46,4 @@ public class LoginResponse {
     public void setToken(String token) {
         this.token = token;
     }
-
-    // Getters & setters
 }
