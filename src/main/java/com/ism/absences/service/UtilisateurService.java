@@ -2,7 +2,10 @@ package com.ism.absences.service;
 
 import com.ism.absences.entity.Utilisateur;
 import com.ism.absences.repository.UtilisateurRepository;
+
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+
 
 import java.util.List;
 import java.util.Optional;
@@ -11,9 +14,11 @@ import java.util.Optional;
 public class UtilisateurService {
 
     private final UtilisateurRepository utilisateurRepository;
+    private final PasswordEncoder passwordEncoder;
 
-    public UtilisateurService(UtilisateurRepository utilisateurRepository) {
+    public UtilisateurService(UtilisateurRepository utilisateurRepository, PasswordEncoder passwordEncoder) {
         this.utilisateurRepository = utilisateurRepository;
+        this.passwordEncoder = passwordEncoder;
     }
 
     public List<Utilisateur> findAll() {
@@ -29,8 +34,12 @@ public class UtilisateurService {
     }
 
     public Utilisateur save(Utilisateur utilisateur) {
+        String rawPassword = utilisateur.getMotDePasse();
+        String encodedPassword = passwordEncoder.encode(rawPassword);
+        utilisateur.setMotDePasse(encodedPassword);
         return utilisateurRepository.save(utilisateur);
     }
+    
 
     public void deleteById(String id) {
         utilisateurRepository.deleteById(id);
