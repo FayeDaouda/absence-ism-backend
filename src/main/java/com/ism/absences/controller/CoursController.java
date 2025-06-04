@@ -78,4 +78,9 @@ public class CoursController {
      public List<Cours> getCoursDeLaSemaine(@PathVariable String classeId) {
     return coursService.findCoursDeLaSemaine(classeId);
 }
+@GetMapping("/utilisateurs/{matricule}/cours-aujourdhui")
+public ResponseEntity<List<Cours>> getCoursDuJourParMatricule(@PathVariable String matricule) {
+    List<Cours> coursDuJour = coursService.getCoursDuJourParMatricule(matricule);
+    return ResponseEntity.ok(coursDuJour);
+}
 }
