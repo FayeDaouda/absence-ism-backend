@@ -12,5 +12,7 @@ public interface CoursRepository extends MongoRepository<Cours, String> {
     List<Cours> findByProfesseur(String professeur);
     List<Cours> findByClasseIdAndDateHeureDebutBetween(String classeId, LocalDateTime debut, LocalDateTime fin);
     List<Cours> findByClasseIdAndDate(String classeId, LocalDate date);
+    List<Cours> findByDateHeureDebutBetween(LocalDateTime start, LocalDateTime end);
+
 
 }

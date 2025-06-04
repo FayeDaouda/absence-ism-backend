@@ -11,6 +11,8 @@ public interface UtilisateurRepository extends MongoRepository<Utilisateur, Stri
     Optional<Utilisateur> findByEmail(String email);
     List<Utilisateur> findByRole(String role);
     List<Utilisateur> findByClasseId(String classeId);
+    List<Utilisateur> findByRoleAndClasseId(String role, String classeId);
+
 
 
 }
