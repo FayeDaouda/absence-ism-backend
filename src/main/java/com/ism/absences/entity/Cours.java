@@ -3,6 +3,7 @@ package com.ism.absences.entity;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 @Document(collection = "cours")
@@ -15,6 +16,7 @@ public class Cours {
     private String description; // optionnel
     private String classeId; // référence à Classe
     private String professeur; // nom du prof ou id (si géré)
+    private LocalDate date;
 
     private LocalDateTime dateHeureDebut;
     private LocalDateTime dateHeureFin;
