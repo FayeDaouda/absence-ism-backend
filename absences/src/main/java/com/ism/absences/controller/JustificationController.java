@@ -14,6 +14,8 @@ import java.util.Optional;
 public class JustificationController {
 
     @Autowired
+private ImageService imageService;
+    @Autowired
     private JustificationService justificationService;
 
     @GetMapping
@@ -53,4 +55,33 @@ public class JustificationController {
         justificationService.delete(id); // ✅ méthode correcte
         return ResponseEntity.noContent().build();
     }
+    @PostMapping(value = "/upload", consumes = {"multipart/form-data"})
+public ResponseEntity<Justification> createWithFiles(
+        @RequestPart("justification") Justification justification,
+        @RequestPart("files") List<MultipartFile> files
+) {
+    try {
+        // Appeler le microservice image pour chaque fichier
+        List<String> urls = files.stream()
+                .map(file -> {
+                    try {
+                        return imageService.uploadImage(file); // 👈 méthode à faire
+                    } catch (Exception e) {
+                        throw new RuntimeException("Échec upload fichier : " + file.getOriginalFilename());
+                    }
+                })
+                .toList();
+
+        justification.setFichiers(urls);
+        justification.setDateSoumission(LocalDate.now());
+        justification.setStatut("En attente");
+
+        Justification saved = justificationService.create(justification);
+        return ResponseEntity.ok(saved);
+    } catch (Exception e) {
+        return ResponseEntity.internalServerError().build();
+    }
+}
+
+
 }
