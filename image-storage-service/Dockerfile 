@@ -13,8 +13,11 @@ FROM eclipse-temurin:17-jdk-jammy
 
 WORKDIR /app
 
+# Attention : cible bien le bon fichier .jar
 COPY --from=build /app/target/*.jar app.jar
 
+# Le port exposé par le microservice
 EXPOSE 8082
 
-ENTRYPOINT ["java","-jar","app.jar"]
+# Lancement de l'app
+ENTRYPOINT ["java", "-jar", "app.jar"]
