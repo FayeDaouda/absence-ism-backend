@@ -5,16 +5,21 @@ import com.ism.absences.service.JustificationService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import com.ism.absences.util.MultipartInputStreamFileResource;
+
 
 import java.util.List;
 import java.util.Optional;
+import org.springframework.web.multipart.MultipartFile;
+
 
 @RestController
 @RequestMapping("/api/justifications")
 public class JustificationController {
 
     @Autowired
-private ImageService imageService;
+private RestTemplate restTemplate;
+
     @Autowired
     private JustificationService justificationService;
 
@@ -55,33 +60,37 @@ private ImageService imageService;
         justificationService.delete(id); // ✅ méthode correcte
         return ResponseEntity.noContent().build();
     }
+
     @PostMapping(value = "/upload", consumes = {"multipart/form-data"})
-public ResponseEntity<Justification> createWithFiles(
-        @RequestPart("justification") Justification justification,
-        @RequestPart("files") List<MultipartFile> files
-) {
-    try {
-        // Appeler le microservice image pour chaque fichier
-        List<String> urls = files.stream()
-                .map(file -> {
-                    try {
-                        return imageService.uploadImage(file); // 👈 méthode à faire
-                    } catch (Exception e) {
-                        throw new RuntimeException("Échec upload fichier : " + file.getOriginalFilename());
-                    }
-                })
-                .toList();
-
-        justification.setFichiers(urls);
-        justification.setDateSoumission(LocalDate.now());
-        justification.setStatut("En attente");
-
-        Justification saved = justificationService.create(justification);
-        return ResponseEntity.ok(saved);
-    } catch (Exception e) {
-        return ResponseEntity.internalServerError().build();
+    public ResponseEntity<Justification> createWithFiles(
+            @RequestPart("justification") Justification justification,
+            @RequestPart("files") List<MultipartFile> files
+    ) {
+        try {
+            List<String> urls = new ArrayList<>();
+    
+            for (MultipartFile file : files) {
+                HttpHeaders headers = new HttpHeaders();
+                headers.setContentType(MediaType.MULTIPART_FORM_DATA);
+    
+                MultiValueMap<String, Object> body = new LinkedMultiValueMap<>();
+                body.add("file", new MultipartInputStreamFileResource(file.getInputStream(), file.getOriginalFilename(), file.getSize(), file.getContentType()));
+    
+                HttpEntity<MultiValueMap<String, Object>> requestEntity = new HttpEntity<>(body, headers);
+    
+                String url = restTemplate.postForObject("https://<TON-MICROSERVICE>.onrender.com/api/upload", requestEntity, String.class);
+                urls.add(url);
+            }
+    
+            justification.setFichiers(urls);
+            justification.setDateSoumission(LocalDate.now());
+            justification.setStatut("En attente");
+    
+            Justification saved = justificationService.create(justification);
+            return ResponseEntity.ok(saved);
+        } catch (Exception e) {
+            return ResponseEntity.internalServerError().build();
+        }
     }
-}
-
-
+    
 }

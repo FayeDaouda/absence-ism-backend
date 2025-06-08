@@ -1,16 +1,20 @@
-package com.ism.absences.utils;
+package com.ism.absences.util;
 
 import org.springframework.core.io.InputStreamResource;
 
-import java.io.IOException;
 import java.io.InputStream;
 
 public class MultipartInputStreamFileResource extends InputStreamResource {
-    private final String filename;
 
-    public MultipartInputStreamFileResource(InputStream inputStream, String filename) {
+    private final String filename;
+    private final long contentLength;
+    private final String contentType;
+
+    public MultipartInputStreamFileResource(InputStream inputStream, String filename, long contentLength, String contentType) {
         super(inputStream);
         this.filename = filename;
+        this.contentLength = contentLength;
+        this.contentType = contentType;
     }
 
     @Override
@@ -19,7 +23,11 @@ public class MultipartInputStreamFileResource extends InputStreamResource {
     }
 
     @Override
-    public long contentLength() throws IOException {
-        return -1;
+    public long contentLength() {
+        return this.contentLength;
+    }
+
+    public String getContentType() {
+        return this.contentType;
     }
 }
