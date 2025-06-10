@@ -107,7 +107,7 @@ public class JustificationController {
                 HttpEntity<MultiValueMap<String, Object>> requestEntity = new HttpEntity<>(body, headers);
     
                 // 🔁 Correction de l'URL du microservice
-                String imageServiceUrl = "https://image-storage-service.onrender.com/api/images/upload";
+                String imageServiceUrl = "https://image-service-et99.onrender.com/api/images/upload";
     
                 String uploadedUrl = restTemplate.postForObject(imageServiceUrl, requestEntity, String.class);
                 urls.add(uploadedUrl);
