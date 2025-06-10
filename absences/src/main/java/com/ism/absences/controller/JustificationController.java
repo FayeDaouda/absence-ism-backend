@@ -100,7 +100,7 @@ public class JustificationController {
 
                 HttpEntity<MultiValueMap<String, Object>> requestEntity = new HttpEntity<>(body, headers);
 
-                // Remplace par l'URL réelle de ton microservice :
+                // Remplace par l'URL réelle de ton microservice changer :
                 String imageServiceUrl = "https://image-storage-service.onrender.com/api/upload";
 
                 String uploadedUrl = restTemplate.postForObject(imageServiceUrl, requestEntity, String.class);
