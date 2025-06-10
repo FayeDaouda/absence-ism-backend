@@ -1,5 +1,5 @@
 package com.ism.absences.controller;
-import com.ism.absences.entity.LaisserPasser;
+
 import com.ism.absences.dto.request.PointageRequestDTO;
 import com.ism.absences.service.PointageService;
 import org.springframework.http.ResponseEntity;
