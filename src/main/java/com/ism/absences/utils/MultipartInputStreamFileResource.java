@@ -1,4 +1,4 @@
-package com.ism.absences.util;
+package com.ism.absences.utils;
 
 import org.springframework.core.io.InputStreamResource;
 

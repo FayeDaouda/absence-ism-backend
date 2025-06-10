@@ -2,7 +2,7 @@ package com.ism.absences.controller;
 
 import com.ism.absences.entity.Justification;
 import com.ism.absences.service.JustificationService;
-import com.ism.absences.util.MultipartInputStreamFileResource;
+import com.ism.absences.utils.MultipartInputStreamFileResource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
