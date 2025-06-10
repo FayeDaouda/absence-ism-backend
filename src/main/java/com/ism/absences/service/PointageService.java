@@ -1,10 +1,9 @@
 package com.ism.absences.service;
 
-
 import com.ism.absences.dto.request.PointageRequestDTO;
-import com.ism.absences.model.Absence;
-import com.ism.absences.model.SessionCours;
-import com.ism.absences.model.Utilisateur;
+import com.ism.absences.entity.Absence;
+import com.ism.absences.entity.SessionCours;
+import com.ism.absences.entity.Utilisateur;
 import com.ism.absences.repository.AbsenceRepository;
 import com.ism.absences.repository.SessionCoursRepository;
 import com.ism.absences.repository.UtilisateurRepository;
@@ -12,6 +11,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -44,11 +45,13 @@ public class PointageService {
 
         LocalDateTime now = LocalDateTime.now();
 
-        // On cherche un cours en cours actuellement
-        Optional<SessionCours> coursActuel = sessionCoursRepository
-                .findByClasseIdAndDate(etudiant.getClasse().getId(), now.toLocalDate())
-                .stream()
-                .filter(sc -> now.isAfter(sc.getHeureDebut()) && now.isBefore(sc.getHeureFin()))
+        List<SessionCours> sessions = sessionCoursRepository.findByClasseIdAndDateCours(etudiant.getClasse().getId(), now.toLocalDate());
+
+        Optional<SessionCours> coursActuel = sessions.stream()
+                .filter(sc -> {
+                    LocalTime currentTime = now.toLocalTime();
+                    return currentTime.isAfter(sc.getHeureDebut()) && currentTime.isBefore(sc.getHeureFin());
+                })
                 .findFirst();
 
         if (coursActuel.isEmpty()) {
@@ -57,8 +60,7 @@ public class PointageService {
 
         SessionCours session = coursActuel.get();
 
-        // Déterminer si l'étudiant est en retard (> 10 minutes après le début)
-        boolean enRetard = now.isAfter(session.getHeureDebut().plusMinutes(10));
+        boolean enRetard = now.toLocalTime().isAfter(session.getHeureDebut().plusMinutes(10));
 
         Absence absence = new Absence();
         absence.setEtudiant(etudiant);
