@@ -12,6 +12,8 @@ import org.springframework.util.MultiValueMap;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.multipart.MultipartFile;
+import com.fasterxml.jackson.databind.ObjectMapper;
+
 
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -76,20 +78,24 @@ public class JustificationController {
     // 📤 POST justification avec fichiers
     @PostMapping(value = "/upload", consumes = {"multipart/form-data"})
     public ResponseEntity<Justification> createWithFiles(
-            @RequestPart("justification") Justification justification,
+            @RequestPart("justification") String justificationJson,
             @RequestPart("files") List<MultipartFile> files
     ) {
         if (files == null || files.isEmpty()) {
             return ResponseEntity.badRequest().build();
         }
-
+    
         try {
+            // Désérialiser le JSON en objet Justification
+            ObjectMapper mapper = new ObjectMapper();
+            Justification justification = mapper.readValue(justificationJson, Justification.class);
+    
             List<String> urls = new ArrayList<>();
-
+    
             for (MultipartFile file : files) {
                 HttpHeaders headers = new HttpHeaders();
                 headers.setContentType(MediaType.MULTIPART_FORM_DATA);
-
+    
                 MultiValueMap<String, Object> body = new LinkedMultiValueMap<>();
                 body.add("file", new MultipartInputStreamFileResource(
                         file.getInputStream(),
@@ -97,26 +103,27 @@ public class JustificationController {
                         file.getSize(),
                         file.getContentType()
                 ));
-
+    
                 HttpEntity<MultiValueMap<String, Object>> requestEntity = new HttpEntity<>(body, headers);
-
-                // Remplace par l'URL réelle de ton microservice changer :
-                String imageServiceUrl = "https://image-storage-service.onrender.com/api/upload";
-
+    
+                // 🔁 Correction de l'URL du microservice
+                String imageServiceUrl = "https://image-storage-service.onrender.com/api/images/upload";
+    
                 String uploadedUrl = restTemplate.postForObject(imageServiceUrl, requestEntity, String.class);
                 urls.add(uploadedUrl);
             }
-
+    
             justification.setFichiers(urls);
             justification.setDateSoumission(LocalDate.now());
             justification.setStatut("En attente");
-
+    
             Justification saved = justificationService.create(justification);
             return ResponseEntity.ok(saved);
-
+    
         } catch (Exception e) {
             e.printStackTrace();
             return ResponseEntity.internalServerError().build();
         }
     }
+    
 }
