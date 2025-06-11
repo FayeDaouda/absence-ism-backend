@@ -29,9 +29,8 @@ public class AbsenceSchedulerService {
         this.utilisateurRepository = utilisateurRepository;
     }
 
-    // Tous les jours à 2h du matin
-    @Scheduled(cron = "0 25 2 * * *")
-
+    // Tous les jours à 19h00
+@Scheduled(cron = "0 0 19 * * *")
     public void markAbsentForNonPointedStudents() {
         System.out.println("📅 Tâche planifiée : marquage automatique des absents");
 
@@ -65,7 +64,7 @@ public class AbsenceSchedulerService {
                     absence.setDate(today);
                     absence.setHeureDebut(cours.getDateHeureDebut().toLocalTime());
                     absence.setHeureFin(cours.getDateHeureFin().toLocalTime());
-                    absence.setStatut("absent");
+                    absence.setStatut("ABSENT");
                     absence.setJustificationId(null); 
                     absence.setVigileId(null); 
 

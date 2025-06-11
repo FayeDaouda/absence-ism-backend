@@ -1,8 +1,10 @@
 package com.ism.absences.controller;
 
+import com.ism.absences.dto.request.EtatRequest;
 import com.ism.absences.entity.Utilisateur;
 import com.ism.absences.service.UtilisateurService;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -88,6 +90,20 @@ public ResponseEntity<List<Utilisateur>> getUtilisateursByClasse(@PathVariable("
         return ResponseEntity.noContent().build(); // 204 No Content
     }
     return ResponseEntity.ok(utilisateurs); // 200 OK
+}
+
+@PutMapping("/{id}/etat")
+@PreAuthorize("hasRole('ADMIN')")
+public ResponseEntity<?> updateEtat(
+        @PathVariable String id,
+        @RequestBody EtatRequest request
+) {
+    try {
+        Utilisateur updated = utilisateurService.mettreAJourEtat(id, request.getEtat());
+        return ResponseEntity.ok(updated);
+    } catch (RuntimeException e) {
+        return ResponseEntity.badRequest().body(e.getMessage());
+    }
 }
 
 

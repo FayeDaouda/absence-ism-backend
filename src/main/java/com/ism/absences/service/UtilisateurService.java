@@ -5,6 +5,8 @@ import com.ism.absences.repository.UtilisateurRepository;
 
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import com.ism.absences.enums.Role;
+
 
 
 import java.util.List;
@@ -50,5 +52,24 @@ public class UtilisateurService {
     public List<Utilisateur> findByClasseId(String classeId) {
         return utilisateurRepository.findByClasseId(classeId);
     }
+
+    public Utilisateur mettreAJourEtat(String utilisateurId, String etat) {
+        Utilisateur utilisateur = utilisateurRepository.findById(utilisateurId)
+                .orElseThrow(() -> new RuntimeException("Utilisateur non trouvé"));
+    
+        // Vérifie que c’est un étudiant
+        if (utilisateur.getRole() != Role.ETUDIANT) {
+            throw new RuntimeException("Seuls les étudiants peuvent avoir un état A_JOUR / PAS_A_JOUR");
+        }
+    
+        // Vérifie que l'état est valide
+        if (!etat.equals("A_JOUR") && !etat.equals("PAS_A_JOUR")) {
+            throw new RuntimeException("Valeur d'état invalide : doit être A_JOUR ou PAS_A_JOUR");
+        }
+    
+        utilisateur.setEtat(etat);
+        return utilisateurRepository.save(utilisateur);
+    }
+    
     
 }

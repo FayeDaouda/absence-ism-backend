@@ -118,7 +118,7 @@ public class PointageController {
         for (Cours cours : coursDuJour) {
             String statut;
             if (now.isBefore(cours.getDateHeureDebut().toLocalTime())) {
-                statut = "ABSENT"; // Avant l’heure, pas encore arrivé
+                statut = "PRESENT"; // Avant l’heure, pas encore arrivé
             } else if (now.isAfter(cours.getDateHeureDebut().toLocalTime()) && now.isBefore(cours.getDateHeureDebut().toLocalTime().plusMinutes(15))) {
                 statut = "PRESENT"; // Arrivé à l’heure ou dans la tolérance de 15min
             } else {
