@@ -11,6 +11,7 @@ import com.ism.absences.repository.UtilisateurRepository;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.List;
@@ -62,7 +63,10 @@ public class PointageService {
 
             // Vérification qu'une absence n'a pas déjà été enregistrée pour cet étudiant, ce cours et cette date
             boolean dejaPointe = !absenceRepository.findByEtudiantIdAndCoursIdAndDate(
-                    etudiant.getId(), session.getId(), now.toLocalDate()).isEmpty();
+                    etudiant.getId(),
+                    String.valueOf(session.getId()),
+                    now.toLocalDate()
+            ).isEmpty();
 
             if (dejaPointe) {
                 return ResponseEntity.badRequest().body("Absence déjà enregistrée pour cet étudiant et ce cours à cette date");
@@ -74,7 +78,7 @@ public class PointageService {
             // Création et sauvegarde de l'absence
             Absence absence = new Absence();
             absence.setEtudiantId(etudiant.getId());
-            absence.setCoursId(session.getId());
+            absence.setCoursId(String.valueOf(session.getId()));
             absence.setDate(now.toLocalDate());
             absence.setHeureDebut(session.getHeureDebut());
             absence.setHeureFin(session.getHeureFin());
@@ -90,4 +94,26 @@ public class PointageService {
             return ResponseEntity.status(500).body("Erreur serveur: " + e.getMessage());
         }
     }
+
+    public boolean existsByMatriculeAndCoursIdForToday(String matricule, Long coursId) {
+        LocalDate today = LocalDate.now();
+
+        // Récupérer l'étudiant via matricule
+        Utilisateur etudiant = utilisateurRepository.findByMatricule(matricule)
+                .orElse(null);
+
+        if (etudiant == null) {
+            // Étudiant non trouvé, on retourne false
+            return false;
+        }
+
+        // Convertir coursId Long en String
+        String coursIdStr = String.valueOf(coursId);
+
+        // Vérifier existence d'une absence pour cet étudiant, ce cours et cette date
+        return absenceRepository.existsByEtudiantIdAndCoursIdAndDate(etudiant.getId(), coursIdStr, today);
+    }
+}
+
+
 }

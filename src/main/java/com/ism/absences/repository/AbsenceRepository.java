@@ -13,6 +13,8 @@ public interface AbsenceRepository extends MongoRepository<Absence, String> {
 
     // Ajoute cette méthode personnalisée pour ta recherche précise
     List<Absence> findByEtudiantIdAndCoursIdAndDate(String etudiantId, String coursId, LocalDate date);
+    boolean existsByEtudiantIdAndCoursIdAndDate(String etudiantId, String coursId, LocalDate date);
+
 
 
     // Tu peux ajouter d'autres méthodes de recherche selon besoin
