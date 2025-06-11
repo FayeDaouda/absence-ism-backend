@@ -35,4 +35,8 @@ public class AbsenceService {
     public void deleteById(String id) {
         absenceRepository.deleteById(id);
     }
+    public List<Absence> getAbsencesByVigile(String vigileId) {
+        return absenceRepository.findByVigileId(vigileId);
+    }
+    
 }

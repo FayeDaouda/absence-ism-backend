@@ -10,6 +10,8 @@ public interface AbsenceRepository extends MongoRepository<Absence, String> {
 
     List<Absence> findByEtudiantId(String etudiantId);
     List<Absence> findByCoursId(String coursId);
+    List<Absence> findByVigileId(String vigileId);
+
 
     // Ajoute cette méthode personnalisée pour ta recherche précise
     List<Absence> findByEtudiantIdAndCoursIdAndDate(String etudiantId, String coursId, LocalDate date);

@@ -78,6 +78,12 @@ public class AbsenceController {
         absenceService.deleteById(id);
         return ResponseEntity.noContent().build();
     }
+    @GetMapping("/vigile/{vigileId}")
+public ResponseEntity<List<Absence>> getAbsencesByVigile(@PathVariable String vigileId) {
+    List<Absence> absences = absenceService.getAbsencesByVigile(vigileId);
+    return ResponseEntity.ok(absences);
+}
+
 
 
     @RestController
