@@ -30,7 +30,7 @@ public class AbsenceSchedulerService {
     }
 
     // Tous les jours à 2h du matin
-    @Scheduled(cron = "0 0 18 * * *")
+    @Scheduled(cron = "0 25 2 * * *")
 
     public void markAbsentForNonPointedStudents() {
         System.out.println("📅 Tâche planifiée : marquage automatique des absents");
