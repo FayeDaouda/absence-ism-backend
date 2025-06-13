@@ -30,18 +30,21 @@ public class SecurityConfig {
     }
 
     @Bean
-public CorsFilter corsFilter() {
-    CorsConfiguration config = new CorsConfiguration();
-    config.setAllowCredentials(true);
-    config.addAllowedOriginPattern("*");  // Autorise toutes les origines
-    config.addAllowedHeader("*");
-    config.addAllowedMethod("*");
+    public CorsFilter corsFilter() {
+        CorsConfiguration config = new CorsConfiguration();
+        config.setAllowCredentials(true);
+        config.setAllowedOriginPatterns(List.of(
+            "http://localhost:*",
+            "https://absence-ism-frontend-cxz2.vercel.app"
+        ));
+        config.setAllowedHeaders(List.of("*"));
+        config.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
 
-    UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
-    source.registerCorsConfiguration("/**", config);
-    return new CorsFilter(source);
-}
+        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+        source.registerCorsConfiguration("/**", config);
 
+        return new CorsFilter(source);
+    }
 
     @Bean
     public PasswordEncoder passwordEncoder() {
