@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -19,36 +20,33 @@ public class SecurityConfig {
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
             .csrf(csrf -> csrf.disable())
-            .authorizeHttpRequests(auth -> auth.anyRequest().permitAll())
+            .authorizeHttpRequests(auth -> auth
+                .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll() // Autorise les pré-requêtes CORS
+                .anyRequest().permitAll()
+            )
             .httpBasic(basic -> basic.disable())
             .formLogin(form -> form.disable());
         return http.build();
     }
 
-    // CORS global filter
     @Bean
-public CorsFilter corsFilter() {
-    CorsConfiguration config = new CorsConfiguration();
-    config.setAllowCredentials(true);
-    config.setAllowedOriginPatterns(List.of(
-        "http://localhost:*",
-        "https://absence-ism-frontend-cxz2.vercel.app",
+    public CorsFilter corsFilter() {
+        CorsConfiguration config = new CorsConfiguration();
+        config.setAllowCredentials(true);
+        config.setAllowedOriginPatterns(List.of(
+            "http://localhost:*",
+            "https://absence-ism-frontend-cxz2.vercel.app",
+            "https://absence-ism-frontend-cxz2-git-main-daoudas-projects-8ac45148.vercel.app",
+            "https://absence-ism-frontend-cxz2-ev30rwnll-daoudas-projects-8ac45148.vercel.app"
+        ));
+        config.setAllowedHeaders(List.of("*"));
+        config.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
 
-        "https://absence-ism-frontend-cxz2-git-main-daoudas-projects-8ac45148.vercel.app",
+        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+        source.registerCorsConfiguration("/**", config);
 
-        "https://https://absence-ism-frontend-cxz2-ev30rwnll-daoudas-projects-8ac45148.vercel.app"
-
-
-    ));
-    config.setAllowedHeaders(List.of("*"));
-    config.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
-
-    UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
-    source.registerCorsConfiguration("/**", config);
-
-    return new CorsFilter(source);
-}
-
+        return new CorsFilter(source);
+    }
 
     @Bean
     public PasswordEncoder passwordEncoder() {
