@@ -32,7 +32,7 @@ public CorsFilter corsFilter() {
     config.setAllowCredentials(true);
     config.setAllowedOriginPatterns(List.of(
         "http://localhost:*",
-        "https://absence-ism-frontend.vercel.app"
+        "https://absence-ism-frontend-cxz2.vercel.app"
     ));
     config.setAllowedHeaders(List.of("*"));
     config.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
